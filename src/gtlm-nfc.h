@@ -27,6 +27,14 @@
 #define __GTLM_NFC_H__
 
 #include <glib-object.h>
+#include <gio/gio.h>
+
+typedef enum {
+    GTLM_NFC_ERROR_NONE,
+
+    GTLM_NFC_ERROR_NO_TAG = 1
+   
+} GTlmNfcError;
 
 #define G_TYPE_TLM_NFC             (gtlm_nfc_get_type ())
 #define GTLM_NFC(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), G_TYPE_TLM_NFC, GTlmNfc))
@@ -43,6 +51,9 @@ struct _GTlmNfc
 {
     GObject parent_instance;
     
+    GDBusObjectManager* neard_manager; 
+    GDBusConnection* system_bus;
+    guint agent_registration_id;
 };
 
 struct _GTlmNfcClass
@@ -51,5 +62,11 @@ struct _GTlmNfcClass
 };
 
 GType gtlm_nfc_get_type (void);
+
+void gtlm_nfc_write_username_password(GTlmNfc* tlm_nfc, 
+                                      const gchar* nfc_tag_path,
+                                      const gchar* username, 
+                                      const gchar* password,
+                                      GError** error);
 
 #endif /* __GTLM_NFC_H__ */
